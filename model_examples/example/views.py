@@ -1,13 +1,11 @@
 from django.http import HttpResponse
+from django.core.mail import send_mail
 from django.template.loader import get_template
 from django.shortcuts import render
 from xhtml2pdf import pisa
 
 def index(request):
-    if request.method == 'POST':
-        print("Enviando correo...")
-
-    return render(request, 'index.html', {})
+    return HttpResponse("Hello, world!")
 
 def generar_pdf(request):
     # Obtener la plantilla HTML
@@ -30,3 +28,18 @@ def generar_pdf(request):
         return HttpResponse('Hubo un error al generar el PDF', status=500)
 
     return response
+
+def enviar_correo(request):
+    if request.method == 'POST':
+        asunto = request.POST['asunto']
+        mensaje = request.POST['mensaje']
+        destinatario = request.POST['destinatario']
+        remitente = 'tu_correo@gmail.com'  # Cambia esto por tu correo
+
+        try:
+            send_mail(asunto, mensaje, remitente, [destinatario])
+            return HttpResponse('Correo enviado exitosamente')
+        except Exception as e:
+            return HttpResponse(f'Error al enviar el correo: {str(e)}')
+    
+    return render(request, 'enviar_correo.html')
