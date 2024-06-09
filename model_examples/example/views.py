@@ -1,9 +1,13 @@
 from django.http import HttpResponse
 from django.template.loader import get_template
+from django.shortcuts import render
 from xhtml2pdf import pisa
 
 def index(request):
-    return HttpResponse("Hello, world!")
+    if request.method == 'POST':
+        print("Enviando correo...")
+
+    return render(request, 'index.html', {})
 
 def generar_pdf(request):
     # Obtener la plantilla HTML
