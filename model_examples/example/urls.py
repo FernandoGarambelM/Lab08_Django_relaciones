@@ -4,5 +4,5 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path('generar_pdf/', views.generar_pdf, name='generar_pdf'),
-    # Agrega otras rutas según sea necesario
+    path('enviar_correo/', views.enviar_correo, name='enviar_correo'),
 ]
