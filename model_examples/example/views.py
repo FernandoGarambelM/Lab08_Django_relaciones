@@ -43,7 +43,7 @@ def enviar_correo(request):
         asunto = request.POST['asunto']
         mensaje = request.POST['mensaje']
         destinatario = request.POST['destinatario']
-        remitente = 'tu_correo@gmail.com'  # Cambia esto por tu correo
+        remitente = 'fgarambel@unsa.edu.pe'  
 
         if 'send_plain' in request.POST:
             try:
@@ -56,25 +56,25 @@ def enviar_correo(request):
             template_path = 'plantilla_pdf.html'
             template = get_template(template_path)
             html = template.render(context)
-
+            
             result = BytesIO()
             pisa_status = pisa.CreatePDF(html, dest=result)
-
+            
             if pisa_status.err:
                 return HttpResponse('Hubo un error al generar el PDF: %s' % pisa_status.err)
-
+            
             email = EmailMessage(
                 asunto,
                 mensaje,
                 remitente,
                 [destinatario]
             )
-
+            
             email.attach('datos_modelos.pdf', result.getvalue(), 'application/pdf')
             email.send()
-
+            
             return HttpResponse('Correo con PDF enviado exitosamente')
-
+    
     return render(request, 'enviar_correo.html', context)
 
 def enviar_pdf_por_correo(request):
