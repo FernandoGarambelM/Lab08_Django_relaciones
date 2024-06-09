@@ -21,6 +21,7 @@ class Movie(models.Model):
     
 class Character(models.Model):
     name = models.CharField(max_length=10)
+    movies = models.ManyToManyField(Movie)
 
     def __str__(self):
         return self.name
