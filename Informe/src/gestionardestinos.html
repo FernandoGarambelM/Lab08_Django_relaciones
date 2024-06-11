@@ -1,0 +1,34 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Gestionar Destinos</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+    <h1>Gestionar Destinos Turisticos</h1>
+    
+    <!-- Formulario de Añadir/Modificar -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" name="modificar" {% if not id %}disabled{% endif %}>Modificar</button>
+        <button type="submit" name="eliminar" {% if not id %}disabled{% endif %}>Eliminar</button>
+        <button type="submit" name="añadir" {% if id %}disabled{% endif %}>Anadir</button>
+    </form>
+    
+    <h2>Lista de Destinos</h2>
+    <ul>
+        {% for destino in destinos %}
+            <li>
+                <h2>{{ destino.name }}</h2>
+                <p>{{ destino.desc}}</p>
+                <p>Precio: {{ destino.price}}</p>
+                <p>{% if destino.offer %}En oferta{% endif %}</p>
+                <a href="{% url 'modificar_destino' destino.id %}">Seleccionar</a>
+            </li>
+        {% endfor %}
+    </ul>
+    
+</body>
+</html>
