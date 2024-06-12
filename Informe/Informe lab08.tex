@@ -193,7 +193,7 @@
 		\item \url{https://flip.com/s/pvZBG1NhvCRn}	
 	\end{itemize}
 	\clearpage
-\section{Replicando la actividad del video}
+\section{Replicando la actividad del video - Relacion de uno a mucho y de muchos a muchos}
 	\begin{itemize}
 		\item Primero ingresamos al entorno virtual
 	\end{itemize}
@@ -245,6 +245,16 @@ class Character(models.Model):
 	\end{lstlisting}
 	\begin{itemize}
 		\item Ahi ingresaremos los datos para las tablas en base de datos
+	\end{itemize}
+	\begin{itemize}
+		\item Realizamos migraciones para enlazar la base de datos
+	\end{itemize}
+	\begin{lstlisting}[language=bash,caption={Codigo para realizar migraciones}][H]
+		python manage.py makemigrations
+		python manage.py migrations
+	\end{lstlisting}
+	\begin{itemize}
+		\item Despues de seguir estos pasos la plantilla ya funciona por completo
 		\item Ahora veremos las bases de datos
 	\end{itemize}
 	\begin{figure}[H]
@@ -281,208 +291,26 @@ class Character(models.Model):
 		%\includesvg{img/automata.svg}
 		%\label{img:mot2}
 		%\caption{Product backlog.}
-	\end{figure}
-\begin{lstlisting}[language=bash,caption={Script para crear un superusuario}][H]
-
-#!/bin/sh
-
-# Variables de entorno para el superusuario
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-DJANGO_SUPERUSER_PASSWORD=123456
-
-# Ejecutar el comando createsuperuser sin interaccion
-python manage.py shell -c "from django.contrib.auth import get_user_model; User = get_user_model(); User.objects.create_superuser('$DJANGO_SUPERUSER_USERNAME', '$DJANGO_SUPERUSER_EMAIL', '$DJANGO_SUPERUSER_PASSWORD') if not User.objects.filter(username='$DJANGO_SUPERUSER_USERNAME').exists() else print('Superusuario ya existe.')"
+	\end{figure}	
+\section{Impresion de pdf y envio de email en django}
+	\begin{itemize}
+		\item Instalamos xhtml12pdf para poder descargar pdfs
+	\end{itemize}
+	\begin{lstlisting}[language=bash,caption={Instalar xhtml12pdf}][H]
+		pip install xhtml12pdf
 	\end{lstlisting}
-	\begin{itemize}
-		\item Realizamos migraciones para enlazar la base de datos
-	\end{itemize}
-	\begin{lstlisting}[language=bash,caption={Codigo para realizar migraciones}][H]
-		python manage.py makemigrations
-		python manage.py migrations
-	\end{lstlisting}
-	\begin{itemize}
-		\item Despues de seguir estos pasos la plantilla ya funciona por completo
-	\end{itemize}
-\section{Adecuar la plantilla a un proyecto en blanco de Django}
-	\begin{itemize}
-		\item Creamos el modelo destination con los datos requeridos
-	\end{itemize}
-\lstinputlisting[language=Python, caption={Código de models.py},numbers=left,]{src/models1.py}
-	\begin{itemize}
-\section{Crear formularios de Añadir Destinos Turísticos, Modificar, Listar y Eliminar Destinos. }
-		\item Luego creamos los forms 
-	\end{itemize}
-\lstinputlisting[language=Python, caption={Código de forms.py},numbers=left,]{src/forms.py}
 	\begin{itemize}
 		\item Luego creamos views.py
 	\end{itemize}	
-\lstinputlisting[language=Python, caption={Código de views.py},numbers=left,]{src/views.py}
+	\lstinputlisting[language=Python, caption={Código de views.py},numbers=left,]{src/views.py}
 	\begin{itemize}
-		\item Luego agregamos urls.py para que Django pueda leerlos
+		\item Generación de PDFs: Genera un PDF con datos de los modelos y descarga directamente (generar pdf) o envia por correo (enviar pdf por correo).
+		\item Envío de correos: Enviar correos de texto plano o con un PDF adjunto, según lo que elija el usuario en el formulario (enviar correo).
+		\item Los siguientes templates usados son:
 	\end{itemize}	
-\lstinputlisting[language=Python, caption={Código de urls.py},numbers=left,]{src/urls.py}	
-	\begin{itemize}
-		\item Usamos la  plantilla de travello, especificamente la siguiente parte para listar los destinos turisticos con if y for
-	\end{itemize}	
-	\begin{lstlisting}[language=bash,caption={Pedazo de html donde se usa  for e if}][H]
-						{% for dest in dests %}
-							<!-- Destination -->
-							<div class="destination item">
-								<div class="destination_image">
-									<img src="{{dest.img.url}}" alt="">
+	\lstinputlisting[language=html, caption={Código de views.py},numbers=left,]{src/enviar_correo.html}
+	\lstinputlisting[language=html, caption={Código de views.py},numbers=left,]{src/plantilla_pdf.html}
 
-									{% if dest.offer %}
-									<div class="spec_offer text-center"><a href="#">Special Offer</a></div>
-									{% endif %}
-								</div>
-								<div class="destination_content">
-									<div class="destination_title"><a href="destinations.html">{{dest.name}}</a>
-									</div>
-									<div class="destination_subtitle">
-										<p>{{dest.desc}}</p>
-									</div>
-									<div class="destination_price">From ${{dest.price}}</div>
-								</div>
-							</div>
-
-							{% endfor %}
-
-	\end{lstlisting}
-	\begin{itemize}
-		\item Se crea en templates gestionar destinos.html
-	\end{itemize}	
-	\begin{lstlisting}[language=bash,caption={Html de gestionar destinos.html}][H]
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Gestionar Destinos</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-</head>
-<body>
-    <h1>Gestionar Destinos Turisticos</h1>
-    
-    <!-- Formulario de Aniadir/Modificar -->
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" name="modificar" {% if not id %}disabled{% endif %}>Modificar</button>
-        <button type="submit" name="eliminar" {% if not id %}disabled{% endif %}>Eliminar</button>
-        <button type="submit" name="aniadir" {% if id %}disabled{% endif %}>Anadir</button>
-    </form>
-    
-    <h2>Lista de Destinos</h2>
-    <ul>
-        {% for destino in destinos %}
-            <li>
-                <h2>{{ destino.name }}</h2>
-                <p>{{ destino.desc}}</p>
-                <p>Precio: {{ destino.price}}</p>
-                <p>{% if destino.offer %}En oferta{% endif %}</p>
-                <a href="{% url 'modificar_destino' destino.id %}">Seleccionar</a>
-            </li>
-        {% endfor %}
-    </ul>
-    
-</body>
-</html>
-	\end{lstlisting}
-	\begin{itemize}
-		\item Para el registro y login de usuarios hacemos los mismo pasos para crear la app y ahora mostramos solo views por que es lo mas importante
-	\end{itemize}	
-	\begin{lstlisting}[language=Python,caption={Codigo de views.py de accounts}][H]
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.contrib.auth.models import User, auth
-
-# Create your views here.
-def login(request):
-    if request.method== 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(username=username,password=password)
-
-        if user is not None:
-            if user.is_superuser:
-                auth.login(request, user)
-                return redirect("/gestionar")   
-            else:
-                auth.login(request, user)
-                return redirect("/")
-        else:
-            messages.info(request,'invalid credentials')
-            return redirect('login')
-
-    else:
-        return render(request,'login.html')    
-
-def register(request):
-
-    if request.method == 'POST':
-        first_name = request.POST['first_name']
-        last_name = request.POST['last_name']
-        username = request.POST['username']
-        password1 = request.POST['password1']
-        password2 = request.POST['password2']
-        email = request.POST['email']
-
-        if password1==password2:
-            if User.objects.filter(username=username).exists():
-                messages.info(request,'Username Taken')
-                return redirect('register')
-            elif User.objects.filter(email=email).exists():
-                messages.info(request,'Email Taken')
-                return redirect('register')
-            else:   
-                user = User.objects.create_user(username=username, password=password1, email=email,first_name=first_name,last_name=last_name)
-                user.save();
-                print('user created')
-                return redirect('login')
-
-        else:
-            messages.info(request,'password not matching..')    
-            return redirect('register')
-        return redirect('/')
-        
-    else:
-        return render(request,'register.html')
-
-
-def logout(request):
-    auth.logout(request)
-    return redirect('/')       
-	\end{lstlisting}
-\lstinputlisting[language=html, caption={Código de register.html},numbers=left,]{src/register.html}	
-\section {Resultado}
-	\begin{itemize}
-		\item Lista de los destinos turisticos
-	\end{itemize}	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/Vista1.png}
-		%\includesvg{img/automata.svg}
-		%\label{img:mot2}
-		%\caption{Product backlog.}
-	\end{figure}
-	\begin{itemize}
-		\item Vista de los forms para gestionar los diferentes destinos turisticos
-	\end{itemize}	
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/Vista3.png}
-		%\includesvg{img/automata.svg}
-		%\label{img:mot2}
-		%\caption{Product backlog.}
-	\end{figure}
-	\begin{figure}[H]
-		\centering
-		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/Vista4.png}
-		%\includesvg{img/automata.svg}
-		%\label{img:mot2}
-		%\caption{Product backlog.}
-	\end{figure}
 \section{Referencias}
 \begin{itemize}			
 	\item \url{https://docs.djangoproject.com/es/3.2/}

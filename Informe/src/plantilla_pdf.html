@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Datos de Modelos</title>
+</head>
+<body>
+    <h1>Datos de Lenguages</h1>
+    <ul>
+        {% for lenguage in lenguages %}
+            <li>{{ lenguage.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Datos de Frameworks</h1>
+    <ul>
+        {% for framework in frameworks %}
+            <li>{{ framework.name }} - {{ framework.lenguage.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Datos de Movies</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h1>Datos de Characters</h1>
+    <ul>
+        {% for character in characters %}
+            <li>{{ character.name }} - {{ character.movies.all|join:", " }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
