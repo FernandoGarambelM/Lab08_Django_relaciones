@@ -198,22 +198,90 @@
 		\item Primero ingresamos al entorno virtual
 	\end{itemize}
 	\begin{lstlisting}[language=bash,caption={Activar el ambiente virtual}][H]
-		env\Scripts\activate
-	\end{lstlisting}
-	\begin{lstlisting}[language=bash,caption={Clonar el repositorio}][H]
-		git clone https://github.com/navinreddy20/django-telusko-codes
+		test\Scripts\activate
 	\end{lstlisting}
 	\begin{itemize}
-		\item Luego instalamos postgresql y pgadmin 
-		\item Luego instalamos al entorno virtual psycopg2-binary y Pillow
+		\item Creamos los modelos que vamos a usar
 	\end{itemize}
-	\begin{lstlisting}[language=bash,caption={Instalando psycopg2-binary y Pillow}][H]
-		pip install psycopg2-binary
-		pip install Pillow
+	\begin{lstlisting}[language=bash,caption={Codigo de models.py}][H]
+		from django.db import models
+
+# Create your models here.
+class Lenguage(models.Model):
+    name = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return self.name
+    
+class Framework(models.Model):
+    name = models.CharField(max_length=10)
+    lenguage = models.ForeignKey(Lenguage, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+class Movie(models.Model):
+    name = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+    
+class Character(models.Model):
+    name = models.CharField(max_length=10)
+    movies = models.ManyToManyField(Movie)
+
+    def __str__(self):
+        return self.name
 	\end{lstlisting}
 	\begin{itemize}
-		\item  Despues de instalar, creamos un superusuario con el siguiente script
+		\item Es importante aclarar las relaciones que se crearon en estos modelos:
+		\item One-to-Many (Uno a muchos)
+		\item Entre Framework y Lenguage hay una relación uno a muchos. Cada framework está asociado con un único lenguaje, pero un lenguaje puede tener múltiples frameworks. Esto se logra mediante la clave foránea (ForeignKey) en el modelo Framework.
+		\item Many-to-Many (Muchos a muchos)
+		\item Entre Character y Movie hay una relación muchos a muchos. Un personaje puede aparecer en múltiples películas y una película puede tener múltiples personajes. Esto se logra mediante el campo ManyToManyField en el modelo Character.
+		\item En resumen: Lenguage tiene una lista de Frameworks asociados, Framework pertenece a un solo Lenguage, Character puede estar en varias Movies y viceversa, Movie puede tener varios Characters y viceversa, Estas relaciones permiten modelar de manera eficiente la estructura y las interconexiones de los datos.
 	\end{itemize}
+	\begin{lstlisting}[language=bash,caption={Ingresamos a shell de python}][H]
+		python manage.py shell
+	\end{lstlisting}
+	\begin{itemize}
+		\item Ahi ingresaremos los datos para las tablas en base de datos
+		\item Ahora veremos las bases de datos
+	\end{itemize}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/C1.png}
+		%\includesvg{img/automata.svg}
+		%\label{img:mot2}
+		%\caption{Product backlog.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/C2.png}
+		%\includesvg{img/automata.svg}
+		%\label{img:mot2}
+		%\caption{Product backlog.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/C3.png}
+		%\includesvg{img/automata.svg}
+		%\label{img:mot2}
+		%\caption{Product backlog.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/C4.png}
+		%\includesvg{img/automata.svg}
+		%\label{img:mot2}
+		%\caption{Product backlog.}
+	\end{figure}
+	\begin{figure}[H]
+		\centering
+		\includegraphics[width=1.0\textwidth,keepaspectratio]{img/C5.png}
+		%\includesvg{img/automata.svg}
+		%\label{img:mot2}
+		%\caption{Product backlog.}
+	\end{figure}
 \begin{lstlisting}[language=bash,caption={Script para crear un superusuario}][H]
 
 #!/bin/sh
